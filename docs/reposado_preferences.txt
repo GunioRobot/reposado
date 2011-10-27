@@ -28,7 +28,7 @@ The following keys are optional and may be defined in preferences.plist for spec
 
 AdditionalCurlOptions
     This is an array of strings that will be used as part of a configuration file passed to curl. A common use for this is to configure HTTP proxy information if needed for your site. Example:
-    
+
     <key>AdditionalCurlOptions</key>
     <array>
         <string>proxy = "web-proxy.yourcompany.com:8080"</string>
@@ -45,7 +45,7 @@ AppleCatalogURLs
         <string>http://swscan.apple.com/content/catalogs/index.sucatalog</string>
         <string>http://swscan.apple.com/content/catalogs/others/index-leopard.merged-1.sucatalog</string>
         <string>http://swscan.apple.com/content/catalogs/others/index-leopard-snowleopard.merged-1.sucatalog</string>
-        <string>http://swscan.apple.com/content/catalogs/others/index-lion-snowleopard-leopard.merged-1.sucatalog</string>  
+        <string>http://swscan.apple.com/content/catalogs/others/index-lion-snowleopard-leopard.merged-1.sucatalog</string>
     </array>
 
 As of the last update to this document, this is the current set of available Apple Software Update catalogs.
@@ -53,7 +53,7 @@ As of the last update to this document, this is the current set of available App
 
 PreferredLocalizations
     A list of preferred language localizations for software update descriptions. Defaults to:
-    
+
     <key>PreferredLocalizations</key>
     <array>
         <string>English</string>

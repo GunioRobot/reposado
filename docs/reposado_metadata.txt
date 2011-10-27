@@ -18,19 +18,18 @@ CatalogBranches.plist
 		<string>zzzz061-9636</string>
 		<string>zzzz041-0306</string>
 	</array>
-	
+
 
 DownloadStatus.plist
 
 	As each product is successfully downloaded, its ProductID is added to this list. Items not in this list are excluded from the local catalogs.
-	
+
 
 ETags.plist
 
 	ETags for each item downloaded from Apple's servers are stored here. Reposado uses these to only download changed items from Apple's servers.
-	
+
 
 ProductInfo.plist
 
 	This is a cache of information for every product seen in any catalog downloaded from Apple's servers. This info is used when listing available products and when offering deprecated products that have been removed from Apple catalogs.
-	

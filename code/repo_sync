@@ -66,7 +66,7 @@ def os_rename(src, dst):
 
 
 def parseServerMetadata(filename):
-    '''Parses a softwareupdate server metadata file, looking for information 
+    '''Parses a softwareupdate server metadata file, looking for information
     of interest.
     Returns a dictionary containing title, version, and description.'''
     title = ''
@@ -88,7 +88,7 @@ def parseServerMetadata(filename):
         encoded_description = preferred_localization.get('description','')
         if encoded_description:
             description = str(encoded_description)
-        
+
     metadata = {}
     metadata['title'] = title
     metadata['version'] = vers
@@ -196,7 +196,7 @@ def curl(url, destinationpath, onlyifnewer=False, etag=None, resume=False):
     interrupted download. You'll get an error if the existing file is
     complete; if the file has changed since the first download attempt, you'll
     get a mess."""
-    
+
     header = {}
     header['http_result_code'] = '000'
     header['http_result_description'] = ""
@@ -217,7 +217,7 @@ def curl(url, destinationpath, onlyifnewer=False, etag=None, resume=False):
         #print >> fileobj, 'output = "%s"' % tempdownloadpath # does not work on windows
         print >> fileobj, 'ciphers = HIGH,!ADH' # use only >=128 bit SSL
         print >> fileobj, 'url = "%s"' % url
-        
+
         # add additional options from our prefs
         if reposadocommon.pref('AdditionalCurlOptions'):
             for line in reposadocommon.pref('AdditionalCurlOptions'):
@@ -243,7 +243,7 @@ def curl(url, destinationpath, onlyifnewer=False, etag=None, resume=False):
         fileobj.close()
     except Exception, e:
         raise CurlError(-5, 'Error writing curl directive: %s' % str(e))
-    
+
     cmd = [reposadocommon.pref('CurlPath'),
             '-q',                    # don't read .curlrc file
             '--config',              # use config file
@@ -295,7 +295,7 @@ def curl(url, destinationpath, onlyifnewer=False, etag=None, resume=False):
                 reposadocommon.print_stdout('Downloading %s bytes from %s...',
                                         targetsize, url)
             time.sleep(0.1)
-            
+
         if (proc.poll() != None):
             break
 
@@ -305,7 +305,7 @@ def curl(url, destinationpath, onlyifnewer=False, etag=None, resume=False):
         if os.path.exists(tempdownloadpath):
             if (not resume) or (retcode == 33):
                 # 33 means server doesn't support range requests
-                # and so cannot resume downloads, so 
+                # and so cannot resume downloads, so
                 os.remove(tempdownloadpath)
         raise CurlError(retcode, curlerr)
     else:
@@ -349,7 +349,7 @@ def getURL(url, destination_path):
     else:
         saved_etag = None
     try:
-        header = curl(url, destination_path, 
+        header = curl(url, destination_path,
                     onlyifnewer=True, etag=saved_etag)
     except CurlError, err:
         err = 'Error %s: %s' % tuple(err)
@@ -375,7 +375,7 @@ def getURL(url, destination_path):
             os.utime(destination_path, (time.time(), modtimeint))
         if header.get('etag'):
             # store etag for future use
-            record_etag(url, header['etag'])                           
+            record_etag(url, header['etag'])
 
 
 _ETAG = {}
@@ -406,18 +406,18 @@ class ReplicationError (Exception):
     pass
 
 
-def replicateURLtoFilesystem(full_url, root_dir=None, 
+def replicateURLtoFilesystem(full_url, root_dir=None,
                              base_url=None, copy_only_if_missing=False,
                              appendToFilename=''):
-    '''Downloads a URL and stores it in the same relative path on our 
+    '''Downloads a URL and stores it in the same relative path on our
     filesystem. Returns a path to the replicated file.'''
-    
+
     if root_dir == None:
         root_dir = reposadocommon.pref('UpdatesRootDir')
-    
+
     if base_url:
         if not full_url.startswith(base_url):
-            raise ReplicationError('%s is not a resource in %s' % 
+            raise ReplicationError('%s is not a resource in %s' %
                                    (full_url, base_url))
         relative_url = full_url[len(base_url):].lstrip('/')
     else:
@@ -439,7 +439,7 @@ def replicateURLtoFilesystem(full_url, root_dir=None,
     except CurlDownloadError, e:
         raise ReplicationError(e)
     return local_file_path
-    
+
 
 class ArchiveError (Exception):
     '''A custom error when archiving fails'''
@@ -447,7 +447,7 @@ class ArchiveError (Exception):
 
 
 def archiveCatalog(catalogpath):
-    '''Makes a copy of our catalog in our archive folder, 
+    '''Makes a copy of our catalog in our archive folder,
     marking with a date'''
     archivedir = os.path.join(os.path.dirname(catalogpath), 'archive')
     if not os.path.exists(archivedir):
@@ -484,7 +484,7 @@ def getPreferredLocalization(list_of_localizations):
         from Foundation import NSBundle
     except ImportError:
         # Foundation NSBundle isn't available, use prefs instead
-        languages = (reposadocommon.pref('PreferredLocalizations') 
+        languages = (reposadocommon.pref('PreferredLocalizations')
                     or ['English', 'en'])
         for language in languages:
             if language in list_of_localizations:
@@ -495,13 +495,13 @@ def getPreferredLocalization(list_of_localizations):
                 list_of_localizations, None)
         if preferred_langs:
             return preferred_langs[0]
-           
+
     if 'English' in list_of_localizations:
         return 'English'
     elif 'en' in list_of_localizations:
         return 'en'
     return None
-    
+
 
 TMPDIR = None
 def sync(fast_scan=False, download_packages=True):
@@ -509,21 +509,21 @@ def sync(fast_scan=False, download_packages=True):
     Returns a dictionary of products.'''
     global TMPDIR
     TMPDIR = tempfile.mkdtemp()
-    
+
     catalog_urls = reposadocommon.pref('AppleCatalogURLs')
     products = reposadocommon.getProductInfo()
-    
+
     # clear cached AppleCatalog listings
     for item in products.keys():
         products[item]['AppleCatalogs'] = []
     replicated_products = []
-    
+
     for catalog_url in catalog_urls:
         localcatalogpath = \
             reposadocommon.getLocalPathNameFromURL(catalog_url) + '.apple'
         if os.path.exists(localcatalogpath):
             archiveCatalog(localcatalogpath)
-        localcatalogpath = replicateURLtoFilesystem(catalog_url, 
+        localcatalogpath = replicateURLtoFilesystem(catalog_url,
             appendToFilename='.apple')
         try:
             catalog = plistlib.readPlist(localcatalogpath)
@@ -549,11 +549,11 @@ def sync(fast_scan=False, download_packages=True):
                     if download_packages and 'ServerMetadataURL' in product:
                         try:
                             unused_path = replicateURLtoFilesystem(
-                                product['ServerMetadataURL'], 
+                                product['ServerMetadataURL'],
                                 copy_only_if_missing=fast_scan)
                         except ReplicationError:
                             continue
-                    
+
                     if download_packages:
                         try:
                             for package in product.get('Packages', []):
@@ -562,38 +562,38 @@ def sync(fast_scan=False, download_packages=True):
                                 # filesystem before attempting to download
                                 if 'URL' in package:
                                     unused_path = replicateURLtoFilesystem(
-                                        package['URL'], 
+                                        package['URL'],
                                         copy_only_if_missing=fast_scan)
                                 if 'MetadataURL' in package:
                                     unused_path = replicateURLtoFilesystem(
-                                        package['MetadataURL'], 
+                                        package['MetadataURL'],
                                         copy_only_if_missing=fast_scan)
                         except ReplicationError:
                             continue
-                            
+
                     # calculate total size
                     size = 0
                     for package in product.get('Packages', []):
                         size += package.get('Size', 0)
-                    
+
                     distributions = product['Distributions']
                     preferred_lang = getPreferredLocalization(
                         distributions.keys())
                     preferred_dist = None
-                    
+
                     try:
                         for dist_lang in distributions.keys():
                             dist_url = distributions[dist_lang]
-                            if (download_packages or 
+                            if (download_packages or
                                 dist_lang == preferred_lang):
                                 dist_path = replicateURLtoFilesystem(
-                                    dist_url, 
+                                    dist_url,
                                     copy_only_if_missing=fast_scan)
                             if dist_lang == preferred_lang:
                                 preferred_dist = dist_path
                     except ReplicationError:
                         continue
-                    
+
                     if preferred_dist:
                         dist = parseSUdist(preferred_dist)
                         products[product_key]['title'] = dist['title']
@@ -606,16 +606,16 @@ def sync(fast_scan=False, download_packages=True):
                     else:
                         products[product_key]['PostDate'] = \
                             product['PostDate']
-                            
+
                     # if we got this far, we've replicated the product data
                     replicated_products.append(product_key)
-                    
+
                     # record original catalogs in case the product is
                     # deprecated in the future
                     if not 'OriginalAppleCatalogs' in products[product_key]:
                         products[product_key]['OriginalAppleCatalogs'] = \
                             products[product_key]['AppleCatalogs']
-        
+
         # record products we've successfully downloaded
         reposadocommon.writeDownloadStatus(replicated_products)
         # write our ETags to disk for future use
@@ -624,7 +624,7 @@ def sync(fast_scan=False, download_packages=True):
         reposadocommon.writeProductInfo(products)
         # write our local (filtered) catalogs
         reposadocommon.writeLocalCatalogs(localcatalogpath)
-        
+
     # clean up tmpdir
     # TO-DO: write the cleanup function
     # cleanup(TMPDIR)
@@ -646,7 +646,7 @@ def main():
             download_packages = False
         else:
             download_packages = True
-        sync(fast_scan=(not options.recheck), 
+        sync(fast_scan=(not options.recheck),
              download_packages=download_packages)
 
 

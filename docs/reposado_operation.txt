@@ -32,7 +32,7 @@ http://su.myorg.com/content/catalogs/index_testing.sucatalog
 http://su.myorg.com/content/catalogs/others/index-leopard.merged-1_testing.sucatalog
 http://su.myorg.com/content/catalogs/others/index-leopard-snowleopard.merged-1_testing.sucatalog
 
-..but not until you've added something to the testing branch. 
+..but not until you've added something to the testing branch.
 
 Adding products to a branch catalog
 

@@ -24,10 +24,10 @@ repoutil --configure
 
 You'll be asked three questions:
 
-Path to store replicated catalogs and updates: 
-Path to store Reposado metadata: 
+Path to store replicated catalogs and updates:
+Path to store Reposado metadata:
 Base URL for your local Software Update Service
-(Example: http://su.your.org -- leave empty if you are not replicating updates): 
+(Example: http://su.your.org -- leave empty if you are not replicating updates):
 
 Answer appropriately using your decisions in steps 2 and 3 above.
 See "reposado_preferences.txt" for more details on Reposado preferences.
@@ -36,7 +36,7 @@ NOTE: if you enter the paths by dragging folders into a Terminal window from the
 
 5) Run repo_sync to replicate update catalogs and (optionally) update packages to the UpdatesRootDir directory. The first time you do this it may take several hours to complete if you are replicating packages as well as catalogs.
 
-6) Test things so far by visiting a catalog URL in your browser. If http://su.myorg.com is the URL for the updates root directory you created earlier, then http://su.myorg.com/content/catalogs/others/index-leopard-snowleopard.merged-1.sucatalog 
+6) Test things so far by visiting a catalog URL in your browser. If http://su.myorg.com is the URL for the updates root directory you created earlier, then http://su.myorg.com/content/catalogs/others/index-leopard-snowleopard.merged-1.sucatalog
 is the CatalogURL for the Snow Leopard updates catalog. You should see a plist version of the updates catalog displayed in your browser.
 
 7) Next test: run softwareupdate on a client, again pointing it to your Catalog URL:

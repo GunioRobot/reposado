@@ -33,7 +33,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-'''A tool to replicate most of the functionality of 
+'''A tool to replicate most of the functionality of
 Apple Software Update server'''
 
 import optparse
@@ -69,7 +69,7 @@ def get_info(key):
         for branch in catalog_branches.keys():
             if key in catalog_branches[branch]:
                 branchlist.append(branch)
-        
+
         reposadocommon.print_stdout('Product:   %s', key)
         reposadocommon.print_stdout('Title:     %s', products[key]['title'])
         reposadocommon.print_stdout('Version:   %s', products[key]['version'])
@@ -116,8 +116,8 @@ def humanReadable(size_in_bytes):
             continue
         else:
             return str(round(size_in_bytes/float(limit/2**10), 1)) + suffix
-            
-            
+
+
 def print_product_line(key, products, catalog_branches=None):
     '''Prints a line of product info'''
     if key in products:
@@ -133,21 +133,21 @@ def print_product_line(key, products, catalog_branches=None):
             deprecation_state = '(Deprecated)'
         reposadocommon.print_stdout(
             '%-15s %-50s %-10s %-10s %s %s',
-            key, 
-            products[key]['title'], 
+            key,
+            products[key]['title'],
             products[key]['version'],
             products[key]['PostDate'].strftime('%Y-%m-%d'),
-            branchlist, 
+            branchlist,
             deprecation_state)
-            
-            
+
+
 def list_branch(branchname, sort_order='date', reverse_sort=False):
     '''List products in a given catalog branch'''
     catalog_branches = reposadocommon.getCatalogBranches()
     if branchname in catalog_branches:
         list_products(sort_order, reverse_sort, catalog_branches[branchname])
-        
-        
+
+
 def list_deprecated(sort_order='date', reverse_sort=False):
     '''Find products that are no longer referenced in Apple\'s catalogs'''
     products = reposadocommon.getProductInfo()
@@ -168,9 +168,9 @@ def list_products(sort_order='date', reverse_sort=False, list_of_keys=None):
     sort_keys = {'date': 'PostDate',
                  'title': 'title',
                  'id':    'key'}
-                 
+
     sort_key = sort_keys.get(sort_order, 'date')
-        
+
     products = reposadocommon.getProductInfo()
     catalog_branches = reposadocommon.getCatalogBranches()
     product_list = []
@@ -197,11 +197,11 @@ def list_products(sort_order='date', reverse_sort=False, list_of_keys=None):
         product_list.reverse()
     for product in product_list:
         print_product_line(product['key'], products, catalog_branches)
-        
-        
+
+
 def add_product_to_branch(parameters):
     '''Adds one or more products to a branch. Takes a list of strings.
-    The last string must be the name of a branch catalog. All other 
+    The last string must be the name of a branch catalog. All other
     strings must be product_ids.'''
     # sanity checking
     for item in parameters:
@@ -216,11 +216,11 @@ def add_product_to_branch(parameters):
         reposadocommon.print_stderr('Catalog branch %s doesn\'t exist!',
                                 branch_name)
         return
-        
+
     products = reposadocommon.getProductInfo()
     if 'all' in product_id_list:
         product_id_list = products.keys()
-    
+
     for product_id in product_id_list:
         if not product_id in products:
             reposadocommon.print_stderr(
@@ -238,31 +238,31 @@ def add_product_to_branch(parameters):
                 return
             if product_id in catalog_branches[branch_name]:
                 reposadocommon.print_stderr(
-                    '%s (%s-%s) is already in branch %s!', 
+                    '%s (%s-%s) is already in branch %s!',
                     product_id, title, vers, branch_name)
             else:
                 reposadocommon.print_stdout(
-                    'Adding %s (%s-%s) to branch %s...', 
+                    'Adding %s (%s-%s) to branch %s...',
                     product_id, title, vers, branch_name)
                 catalog_branches[branch_name].append(product_id)
-            
+
     reposadocommon.writeCatalogBranches(catalog_branches)
     reposadocommon.writeAllBranchCatalogs()
 
 
 def remove_product_from_branch(parameters):
     '''Removes one or more products from a branch. Takes a list of strings.
-    The last string must be the name of a branch catalog. All other 
+    The last string must be the name of a branch catalog. All other
     strings must be product_ids.'''
-    
-    # sanity checking 
+
+    # sanity checking
     for item in parameters:
         if item.startswith('-'):
             reposadocommon.print_stderr(
                 'Ambiguous parameters: can\'t tell if  '
                 '%s is a parameter or option!', item)
             return
-            
+
     branch_name = parameters[-1]
     product_id_list = parameters[0:-1]
     catalog_branches = reposadocommon.getCatalogBranches()
@@ -278,10 +278,10 @@ def remove_product_from_branch(parameters):
         title = products[product_id]['title']
         vers = products[product_id]['version']
         if not product_id in catalog_branches[branch_name]:
-            reposadocommon.print_stderr('%s (%s-%s) is not in branch %s!', 
+            reposadocommon.print_stderr('%s (%s-%s) is not in branch %s!',
                                     product_id, title, vers, branch_name)
 
-        reposadocommon.print_stdout('Removing %s (%s-%s) from branch %s...', 
+        reposadocommon.print_stdout('Removing %s (%s-%s) from branch %s...',
             product_id, title, vers, branch_name)
         catalog_branches[branch_name].remove(product_id)
     reposadocommon.writeCatalogBranches(catalog_branches)
@@ -290,7 +290,7 @@ def remove_product_from_branch(parameters):
 
 def copy_branches(source_branch, dest_branch):
     '''Copies source_branch to dest_branch, replacing dest_branch'''
-    # sanity checking 
+    # sanity checking
     for branch in [source_branch, dest_branch]:
         if branch.startswith('-'):
             reposadocommon.print_stderr(
@@ -303,7 +303,7 @@ def copy_branches(source_branch, dest_branch):
         return
     if dest_branch in catalog_branches:
         answer = raw_input(
-            'Really replace contents of branch %s with branch %s? [y/n] ' 
+            'Really replace contents of branch %s with branch %s? [y/n] '
              % (dest_branch, source_branch))
         if not answer.lower().startswith('y'):
             return
@@ -312,8 +312,8 @@ def copy_branches(source_branch, dest_branch):
         source_branch, dest_branch)
     reposadocommon.writeCatalogBranches(catalog_branches)
     reposadocommon.writeAllBranchCatalogs()
-    
-    
+
+
 def delete_branch(branchname):
     '''Deletes a branch'''
     catalog_branches = reposadocommon.getCatalogBranches()
@@ -325,7 +325,7 @@ def delete_branch(branchname):
         del catalog_branches[branchname]
         deleteBranchCatalogs(branchname)
         reposadocommon.writeCatalogBranches(catalog_branches)
-    
+
 
 def new_branch(branchname):
     '''Creates a new empty branch'''
@@ -344,7 +344,7 @@ def configure():
 
 def main():
     '''Main command processing'''
-    
+
     p = optparse.OptionParser()
     p.set_usage('''Usage: %prog [options]''')
     #p.add_option('--sync', action='store_true',
@@ -357,11 +357,11 @@ def main():
     p.add_option('--deprecated', action='store_true',
                     help="""List deprecated updates""")
     p.add_option('--sort', metavar='SORT_ORDER', default='date',
-                    help="""Sort list. 
+                    help="""Sort list.
                     Available sort orders are: date, title, id""")
     p.add_option('--reverse', action='store_true',
                     help="""Reverse sort order.""")
-    p.add_option('--branches', '--catalogs', 
+    p.add_option('--branches', '--catalogs',
                     dest='list_branches', action='store_true',
                     help="""List available branch catalogs""")
     p.add_option('--new-branch',
@@ -375,7 +375,7 @@ def main():
                     help='''Copy all items from SOURCE_BRANCH to
                     DEST_BRANCH. If DEST_BRANCH does not exist,
                     it will be created.''')
-    p.add_option('--list-branch', '--list-catalog', 
+    p.add_option('--list-branch', '--list-catalog',
                     dest='branch',
                     metavar='BRANCH_NAME',
                     help="""List updates in branch BRANCH_NAME""")
@@ -393,9 +393,9 @@ def main():
                     metavar='PRODUCT_ID [PRODUCT_ID ...] BRANCH_NAME',
                     help='''Remove one or more PRODUCT_IDs from catalog branch
                     BRANCH_NAME.''')
-    
+
     options, arguments  = p.parse_args()
-    
+
     #if options.sync:
     #    pass
     #    #sync(fast_scan=True)
